@@ -56,18 +56,15 @@ public class TopicListener {
 
   @KafkaListener(topics = "topic3", groupId = "group3")
   // https://youtu.be/CNlsz6JKaI8?t=1897
+
   public void exactlyOnce(ConsumerRecord<?, String> consumerRecord, Acknowledgment ack) {
-    int count = 0;
     ack.acknowledge();
-     LOGGER.info("Try handle message, topic {}, payload {}", consumerRecord.topic(), consumerRecord.value());
-     do {
-       service.handle("topic3", consumerRecord.value());
-     } while ( )
-
-
-
-
-
-
+    LOGGER.info("Try handle message, topic {}, payload {}", consumerRecord.topic(), consumerRecord.value());
+    try {
+      service.handle("topic3", consumerRecord.value());
+    } finally {
+      ack.acknowledge();
+    }
   }
+
 }
